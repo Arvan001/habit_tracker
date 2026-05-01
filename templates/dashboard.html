@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Welcome Section -->
+    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-6 text-white">
+        <h1 class="text-2xl font-bold">Welcome back, {{ user.username }}! 👋</h1>
+        <p class="mt-2 opacity-90">Keep pushing forward. Your consistency builds greatness!</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg hover:shadow-xl transition">
+            <i class="fas fa-clock text-indigo-500 text-2xl mb-2"></i>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Today's Hours</p>
+            <p class="text-2xl font-bold" id="todayHours">0</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg hover:shadow-xl transition">
+            <i class="fas fa-tasks text-green-500 text-2xl mb-2"></i>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Daily Progress</p>
+            <p class="text-2xl font-bold" id="dailyProgress">0%</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg hover:shadow-xl transition">
+            <i class="fas fa-calendar-week text-blue-500 text-2xl mb-2"></i>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Week Hours</p>
+            <p class="text-2xl font-bold" id="weekHours">0</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg hover:shadow-xl transition">
+            <i class="fas fa-calendar-alt text-purple-500 text-2xl mb-2"></i>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Month Hours</p>
+            <p class="text-2xl font-bold" id="monthHours">0</p>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg hover:shadow-xl transition">
+            <i class="fas fa-fire text-orange-500 text-2xl mb-2"></i>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Streak</p>
+            <p class="text-2xl font-bold" id="streak">0</p>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Timer & Tasks Section -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Timer Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <i class="fas fa-stopwatch text-indigo-500"></i> Focus Timer
+                </h3>
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <select id="timerTaskSelect" class="flex-1 p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                        <option value="">No task selected</option>
+                    </select>
+                    <div class="flex gap-2">
+                        <button id="startTimerBtn" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-white transition">
+                            <i class="fas fa-play"></i> Start
+                        </button>
+                        <button id="stopTimerBtn" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-lg text-white transition hidden">
+                            <i class="fas fa-stop"></i> Stop
+                        </button>
+                    </div>
+                </div>
+                <div id="timerDisplay" class="text-5xl font-mono text-center mt-6 font-bold">00:00:00</div>
+            </div>
+
+            <!-- Tasks Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold flex items-center gap-2">
+                        <i class="fas fa-check-circle text-green-500"></i> Today's Habits
+                    </h3>
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        <input type="text" id="searchTask" placeholder="Search tasks..." 
+                               class="pl-10 pr-3 py-1 border rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                    </div>
+                </div>
+                <div id="taskList" class="space-y-2 max-h-96 overflow-y-auto"></div>
+                <button id="addTaskBtn" class="mt-4 w-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 py-2 rounded-lg hover:bg-indigo-200 transition">
+                    <i class="fas fa-plus"></i> Add New Task
+                </button>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="space-y-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-bold mb-3"><i class="fas fa-chart-line text-indigo-500"></i> Study Hours</h3>
+                <canvas id="hoursChart" height="200"></canvas>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                <h3 class="text-lg font-bold mb-3"><i class="fas fa-chart-bar text-green-500"></i> Tasks Completed</h3>
+                <canvas id="tasksChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calendar & Routines -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+            <h3 class="text-xl font-bold mb-4"><i class="fas fa-calendar-alt text-indigo-500"></i> Activity Calendar</h3>
+            <div id="calendar" class="overflow-x-auto"></div>
+        </div>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold"><i class="fas fa-clock text-purple-500"></i> Daily Routines</h3>
+                <button id="addRoutineBtn" class="bg-indigo-600 hover:bg-indigo-700 px-3 py-1 rounded-lg text-white text-sm">
+                    <i class="fas fa-plus"></i> Add
+                </button>
+            </div>
+            <div id="routineList" class="space-y-2 max-h-96 overflow-y-auto"></div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/timer.js') }}"></script>
+<script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}
